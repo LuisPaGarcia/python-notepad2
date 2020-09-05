@@ -85,28 +85,23 @@ def leerLineasInput():
     lista = content.split('\n')
     contador = 1
     for linea in lista:
-        analizarLinea(linea, contador)
+        if len(linea) != 0:
+            analizarLinea(linea, contador)
         contador = contador + 1 
-
-# luispa:=123
-# diego:=111
-# ale
 
 def analizarLinea(linea, numeroDeLinea):
     global errores
     estado= 1
     lineaIndex = str(numeroDeLinea)
     for ind, let in enumerate(linea):
-        index = str(ind)
+        index = str(ind+1)
         letra = str(let)
 
         if estado == 1:
-            print(letra.isalpha(), letra == ":", letra.isnumeric())
-            if letra.isalpha(): # es letra
-                estado = 2
-            elif letra == ":": # es :
+            if letra == ":": # es :
                 estado = 3
-            
+            elif letra.isalpha(): # es letra
+                estado = 2
             elif letra.isnumeric(): # es numero
                 estado = 5
             else: 
@@ -118,20 +113,21 @@ def analizarLinea(linea, numeroDeLinea):
         if estado == 2:
             if letra.isalpha(): # es letra
                 estado = 2
-            if letra.isnumeric(): # es :
+            elif letra.isnumeric(): # es :
                 estado = 2
-            if estado != 2: # si el estado no cambio a 2, hay un error de asignacion
+            else: # si el estado no cambio a 2, hay un error de asignacion
                 err = "Linea " + lineaIndex + ", posicion " + index + ": " + "Error de estado secundario, no es ni letra ni numero. Se encontro un '" + letra + "'.\n"
                 print(err)
                 errores = errores + err
             continue
         
         if estado == 3:
-            print(letra)
             if letra != '=': # es signo igual
                 err = "Linea " + lineaIndex + ", posicion " + index + ": " + "Se esperaba un =, pero se encontro un '" +  letra + "'.\n"
                 print(err)
                 errores = errores + err
+            else: 
+                estado = 4
             continue
 
         if estado == 4:
@@ -150,7 +146,7 @@ def analizarLinea(linea, numeroDeLinea):
 
     print("estado", estado)
     if estado == 1 or estado == 3:
-        err = "Linea " + lineaIndex + ": La entrada no es una asignacion válida, no se ha completado la asignacion esperada nombre:=valor.\n"
+        err = "Linea " + lineaIndex + ": La entrada no es una asignacion válida, no se ha completado la asignacion esperada.\n"
         print(err)
         errores = errores + err
 
